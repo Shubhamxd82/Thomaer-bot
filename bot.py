@@ -190,8 +190,8 @@ def load_json(file):
         with open(file, "r") as f:
             return json.load(f)
     except Exception as e:
-    logger.error(f"Error loading {file}: {e}")
-    return {} if file not in [BLOCKED_FILE, ADMINS_FILE] else []
+        logger.error(f"Error loading {file}: {e}")
+        return {} if file not in [BLOCKED_FILE, ADMINS_FILE] else []
 
 def save_json(file, data):
     with open(file, "w") as f:
