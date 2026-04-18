@@ -17,14 +17,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # ==================== CONFIGURATION ====================
-DEFAULT_MAIN_BOT_TOKEN = "7883509707:AAGnaQFs07hXjX6-1MrU8IRaDZXQSb-Gd-w"
+DEFAULT_MAIN_BOT_TOKEN = "8725864429:AAEGxnXUzWoBbNwvk7Ypodno70jxJ5wTipc"
 DEFAULT_ADMIN_BOT_TOKEN = "8353268447:AAEFfkkubAfWldYfUdOSE7sHrK2taZl_YXs"
-OWNER_ID = 8458169644
+OWNER_ID = 8794642689
 
 # Default Settings
 CHANNELS = {"channel": "@thomasXstoreee"}
 CHANNEL_LINKS = {"channel": "https://t.me/thomasXstoreee"}
-OWNER_USERNAME = "@TGxTHOMASx"
+OWNER_USERNAME = "@Sydney_landdd"
 START_CREDITS = 2
 REF_CREDITS = 1
 
