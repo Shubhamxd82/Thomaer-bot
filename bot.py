@@ -22,8 +22,8 @@ DEFAULT_ADMIN_BOT_TOKEN = "8635650182:AAF8802YojBXtzc6hyHZpCdKFnkkExD-aZ8"
 OWNER_ID = 8794642689
 
 # Default Settings
-CHANNELS = {"channel": "@thomasXstoreee"}
-CHANNEL_LINKS = {"channel": "https://t.me/thomasXstoreee"}
+CHANNELS = {"channel": "@dikaakdwla"}
+CHANNEL_LINKS = {"channel": "https://t.me/dikaakdwla"}
 OWNER_USERNAME = "@Sydney_landdd"
 START_CREDITS = 2
 REF_CREDITS = 1
