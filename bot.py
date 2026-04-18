@@ -189,8 +189,9 @@ def load_json(file):
     try:
         with open(file, "r") as f:
             return json.load(f)
-    except:
-        return {} if file != BLOCKED_FILE and file != ADMINS_FILE else []
+    except Exception as e:
+    logger.error(f"Error loading {file}: {e}")
+    return {} if file not in [BLOCKED_FILE, ADMINS_FILE] else []
 
 def save_json(file, data):
     with open(file, "w") as f:
@@ -374,9 +375,9 @@ async def bombing_task(phone, chat_id, msg_id, duration=1200):
     active_tasks[chat_id] = stats
     
     # Get active APIs
-    active_apis = [api for api in ULTIMATE_APIS if apis_db[ULTIMATE_APIS.index(api)]["active"]]
+    active_apis = [api for i, api in enumerate(ULTIMATE_APIS) if apis_db[i]["active"]]
     
-    connector = aiohttp.TCPConnector(limit=0, verify_ssl=False)
+    connector = aiohttp.TCPConnector(limit=0, ssl=False)
     async with aiohttp.ClientSession(connector=connector) as session:
         while time.time() < end_time and stats["running"]:
             # Update stats every 10 seconds
@@ -550,9 +551,17 @@ def number_handler(m):
     wait_msg = bot.reply_to(m, f"🚀 <b>Starting bombing...</b>\n\n📱 Target: {phone}")
     
     # Start bombing in background
+def run_async_task(coro):
     loop = asyncio.new_event_loop()
-    threading.Thread(target=lambda: loop.run_until_complete(bombing_task(phone, m.chat.id, wait_msg.message_id)), daemon=True).start()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(coro)
+    loop.close()
 
+threading.Thread(
+    target=run_async_task,
+    args=(bombing_task(phone, m.chat.id, wait_msg.message_id),),
+    daemon=True
+).start()
 @bot.message_handler(func=lambda m: m.text == "💰 My Credits")
 def credits_cmd(m):
     if is_blocked(m.from_user.id):
@@ -1331,7 +1340,6 @@ if __name__ == "__main__":
 
 
 from flask import Flask
-import os
 
 app = Flask(__name__)
 
@@ -1344,3 +1352,16 @@ def run_web():
     app.run(host="0.0.0.0", port=port)
 
 threading.Thread(target=run_web).start()
+
+from aiohttp import web
+
+async def health(request):
+    return web.Response(text="Bot is running")
+
+def start_web():
+    app = web.Application()
+    app.router.add_get('/', health)
+    port = int(os.environ.get("PORT", 8080))
+    web.run_app(app, host="0.0.0.0", port=port)
+
+threading.Thread(target=start_web, daemon=True).start()
