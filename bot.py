@@ -529,39 +529,44 @@ def number_handler(m):
     if is_blocked(m.from_user.id):
         bot.reply_to(m, "🚫 Blocked!")
         return
+
     if not check_channel(m.from_user.id):
         show_join(m.chat.id)
         return
-    
+
     uid = str(m.from_user.id)
+
     if uid not in users:
         users[uid] = {"credits": 0, "joined": str(datetime.now())}
         save_json(USERS_FILE, users)
-    
+
     credits = users[uid].get("credits", 0)
+
     if credits < 1:
         bot.reply_to(m, "❌ <b>Insufficient credits!</b>\n\nBuy credits or refer friends.")
         return
-    
+
     # Deduct credit
     users[uid]["credits"] = credits - 1
     save_json(USERS_FILE, users)
-    
-    phone = m.text
-    wait_msg = bot.reply_to(m, f"🚀 <b>Starting bombing...</b>\n\n📱 Target: {phone}")
-    
-    # Start bombing in background
-def run_async_task(coro):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(coro)
-    loop.close()
 
-threading.Thread(
-    target=run_async_task,
-    args=(bombing_task(phone, m.chat.id, wait_msg.message_id),),
-    daemon=True
-).start()
+    phone = m.text
+    wait_msg = bot.reply_to(m, f"🚀 <b>Starting bombing...</b>\n\n🎯 Target: {phone}")
+
+    # ✅ MUST BE INSIDE FUNCTION
+    def run_async_task(coro):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(coro)
+        loop.close()
+
+    # ✅ ALSO INSIDE FUNCTION
+    threading.Thread(
+        target=run_async_task,
+        args=(bombing_task(phone, m.chat.id, wait_msg.message_id),),
+        daemon=True
+    ).start()
+
 @bot.message_handler(func=lambda m: m.text == "💰 My Credits")
 def credits_cmd(m):
     if is_blocked(m.from_user.id):
